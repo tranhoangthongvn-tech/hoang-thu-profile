@@ -667,6 +667,38 @@ document.getElementById('stageRow').innerHTML=W.filter(w=>w[0]==='stage').map(w=
 /* subnav active */
 (function(){const ls=[...document.querySelectorAll('.subin a')];addEventListener('scroll',()=>{let on='';ls.forEach(a=>{const s=document.getElementById('r-'+a.dataset.sub);if(s&&s.getBoundingClientRect().top<200)on=a.dataset.sub});ls.forEach(a=>a.classList.toggle('on',a.dataset.sub===on))},{passive:true})})();
 window.filt=c=>{const el=document.getElementById(c==='all'?'portfolio':'r-'+c);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})};
+/* intro */
+(function(){
+ const intro=document.getElementById('intro'),seq=[['kn.jpg','Hồ Ái Vy','Khuyết Nhang'],['ph.jpg','Út Hường','Phù Hoa Một Kiếp Chờ'],['vx.jpg','An','VIXI 21:17'],['lc.jpg','Nguyễn Thị Lộ','Bí Mật Vườn Lệ Chi'],['tk.jpg','Hạ Lan','Tứ Trạng Khai Xuân']];
+ const A=document.getElementById('bgA'),B=document.getElementById('bgB'),cr=document.getElementById('credit'),bar=document.getElementById('ibar');
+ let i=0,cur=A,done=false,t0=performance.now(),TOT=1800+seq.length*1500;
+ function show(){if(done)return;const s=seq[i];const nx=cur===A?B:A;nx.style.backgroundImage=`url(${I(s[0])})`;nx.classList.add('on');cur.classList.remove('on');cur=nx;cr.classList.remove('on');setTimeout(()=>{document.getElementById('crole').textContent=s[1];document.getElementById('cfilm').textContent='· '+s[2];cr.classList.add('on')},250);i++;if(i<seq.length)setTimeout(show,1500);else setTimeout(end,1600)}
+ function end(){if(done)return;done=true;intro.classList.add('done');document.body.classList.remove('lock');setTimeout(()=>intro.remove(),1000)}
+ function tick(){if(done)return;bar.style.width=Math.min(100,(performance.now()-t0)/TOT*100)+'%';requestAnimationFrame(tick)}
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches){end();return}
+ setTimeout(show,1800);tick();intro.querySelector('.skip').onclick=end;intro.addEventListener('click',e=>{if(e.target.classList.contains('skip'))return;end()});
+ setTimeout(end,TOT+3000);
+})();
+
+/* petals */
+(function(){const c=document.getElementById('dust'),x=c.getContext('2d');let w,h,P=[];function rs(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio}rs();addEventListener('resize',rs);
+ for(let i=0;i<26;i++)P.push({x:Math.random(),y:Math.random(),s:3+Math.random()*5,v:.0004+Math.random()*.0008,a:Math.random()*6,r:Math.random()*.02});
+ (function f(){x.clearRect(0,0,w,h);P.forEach(p=>{p.y+=p.v;p.a+=p.r;p.x+=Math.sin(p.a)*.0006;if(p.y>1.05){p.y=-.05;p.x=Math.random()}x.save();x.translate(p.x*w,p.y*h);x.rotate(p.a);x.fillStyle='rgba(236,150,175,.35)';x.beginPath();x.ellipse(0,0,p.s*devicePixelRatio,p.s*.55*devicePixelRatio,0,0,7);x.fill();x.restore()});requestAnimationFrame(f)})();})();
+
+/* reveal, progress, nav */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);e.target.querySelectorAll?.('[data-n]').forEach(cn)}}),{threshold:.12});
+document.querySelectorAll('.rv,.mbox').forEach(el=>io.observe(el));
+function cn(el){const n=+el.dataset.n,p=+(el.dataset.pad||0);let s=0;const t=setInterval(()=>{s++;el.textContent=String(s).padStart(p,'0');if(s>=n)clearInterval(t)},70)}
+const secs=[...document.querySelectorAll('section[id]')],lnk=[...document.querySelectorAll('.links a')];
+addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';let id='';secs.forEach(s=>{if(s.getBoundingClientRect().top<120)id=s.id});lnk.forEach(a=>a.classList.toggle('act',a.getAttribute('href')==='#'+id))},{passive:true});
+document.addEventListener('pointermove',e=>{const g=e.target.closest?.('.glass');if(!g)return;const r=g.getBoundingClientRect();g.style.setProperty('--mx',e.clientX-r.left+'px');g.style.setProperty('--my',e.clientY-r.top+'px')});
+
+/* typer */
+(function(){const w=['diễn viên phim ngắn','diễn viên phim dọc TikTok','gương mặt TVC & review','diễn viên sân khấu kịch','người mẫu ảnh'],el=document.getElementById('typer');let i=0,j=0,del=false;(function t(){const s=w[i];el.textContent=s.slice(0,j);if(!del&&j<s.length)j++;else if(!del){del=true;return setTimeout(t,1400)}else if(j>0)j--;else{del=false;i=(i+1)%w.length}setTimeout(t,del?35:70)})()})();
+
+/* coin drag */
+(function(){const c=document.querySelector('#coin .c');let rx=0,ry=0,d=null,auto=true;function ap(){c.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`}(function a(){if(auto){ry+=.6;ap()}requestAnimationFrame(a)})();const co=document.getElementById('coin');co.addEventListener('pointerdown',e=>{d=[e.clientX,e.clientY];auto=false;co.setPointerCapture(e.pointerId)});co.addEventListener('pointermove',e=>{if(!d)return;ry+=(e.clientX-d[0]);rx-=(e.clientY-d[1]);d=[e.clientX,e.clientY];ap()});co.addEventListener('pointerup',()=>{d=null;setTimeout(()=>auto=true,1500)})})();
+
 
 
 
