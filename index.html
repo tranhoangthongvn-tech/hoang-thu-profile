@@ -357,6 +357,9 @@ a.stat{display:block}a.stat:hover,.cap[data-go]:hover{transform:translateY(-4px)
   <div class="ibar"><i id="ibar"></i></div>
   <button class="skip" type="button">Vào trang ↓</button>
 </div>
+<script>/* vào trang ngay cả khi ảnh/video còn đang tải */
+(function(){var i=document.getElementById('intro');function go(){if(!i||i.classList.contains('done'))return;i.classList.add('done');document.body.classList.remove('lock');setTimeout(function(){i.style.display='none'},1000)}
+i.addEventListener('click',go);setTimeout(go,9500);window.__introGo=go})();</script>
 
 <div id="prog"></div>
 <canvas id="dust" aria-hidden="true"></canvas>
